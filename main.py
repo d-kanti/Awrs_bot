@@ -124,7 +124,7 @@ def hindu(message):
             shutil.move(file, "prevPaper/"+file)
         except:
             pass
-    log("Upload Complete...")
+    log("Upload Complete....\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
     # os.remove(filename)
 
 @bot.message_handler(func = mon)
