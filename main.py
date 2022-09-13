@@ -4,9 +4,9 @@ import shutil
 import telebot
 import urllib.request
 import requests as req
+from datetime import datetime
 from datetime import date
 from datetime import timedelta
-import logging
 
 try:
     import test
@@ -16,11 +16,37 @@ except:
     key = os.environ["API_KEY"]   # ! "YOUR_API_KEY"
     url = os.environ["WEB_URL"]      # ! The website from where the data is fetched.
    
-
 bot = telebot.TeleBot(key)
 
+
+def log_user(message):
+    time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    user = str(message.from_user.first_name) + " " + str(message.from_user.last_name)
+    uid = message.from_user.id
+    chat = message.chat.id
+
+    st = f"[ {time} ] - {message.text} ||  user: {user} ({uid})   chat id : {chat}\n"
+
+    print(st)
+    with open("log.text","a") as f:
+        f.write(st)
+
+
+def log(text):
+    time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    st = f"[ {time} ] - {text}\n"
+    
+    print(st)
+    with open("log.text","a") as f:
+        f.write(st)
+
+
+    
+    
+    
+
 def download_paper(url):
-    logging.info("downloading")
+    log("Downloading Paper.....")
     today = date.today()
     d4 = today.strftime("%b-%d-%Y")
     filename = "The_Hindu_" + d4 + ".pdf"
@@ -49,6 +75,7 @@ def greet(message):
     'newspaper',
 ])
 def hindu(message):
+    log_user(message)
     bot.delete_message(message.chat.id, message.id)
     bb = bot.send_message(
         message.chat.id, message.from_user.first_name +
@@ -81,6 +108,7 @@ def hindu(message):
             shutil.move(file, "prevPaper/"+file)
         except:
             pass
+    log("Upload Complete...")
     # os.remove(filename)
 
 
