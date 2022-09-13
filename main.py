@@ -129,14 +129,26 @@ def hindu(message):
 
 @bot.message_handler(func = mon)
 def month_pap(message):
+    log_user(message)
     m = get_mon(message)
-    print(m)
+    log(f"getting files ready for the month of {m}")    
+    bb = bot.send_message(message.chat.id,f"hi {message.from_user.first_name}, Please Wait.....\n\nWe are preparing your files... \n\n\nTill then.... Let's Grab a Coffee.. ☕😁")
     file_pref = "The_Hindu_"+m
+    for filename in glob.glob(file_pref+"-??-????.pdf"):
+        with open(filename, 'rb') as f:
+            log(f"sending file '{filename}'")
+            bot.send_document(message.chat.id, f)
     for filename in glob.glob("prevPaper/"+file_pref+"-??-????.pdf"):
-        print(filename)
+        with open(filename, 'rb') as f:
+            log(f"sending file '{filename}'")
+            bot.send_document(message.chat.id, f)
+    bot.delete_message(bb.chat.id, bb.id)
+    log("Uploade Complete.....\n++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+
+ 
 
 
 
-print("running....", time.time())
+print("running....", datetime.now())
 
 bot.polling()
