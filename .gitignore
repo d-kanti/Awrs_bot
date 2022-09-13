@@ -1,1 +1,6 @@
 .env
+test.py
+__pycache__
+*/*.pdf
+*.pdf
+log.text

@@ -6,12 +6,21 @@ import urllib.request
 import requests as req
 from datetime import date
 from datetime import timedelta
+import logging
 
-key = os.environ["API_KEY"]  # ! "YOUR_API_KEY"
+try:
+    import test
+    key = test.API_KEY
+    url = test.WEB_URL
+except:
+    key = os.environ["API_KEY"]   # ! "YOUR_API_KEY"
+    url = os.environ["WEB_URL"]      # ! The website from where the data is fetched.
+   
+
 bot = telebot.TeleBot(key)
 
-
 def download_paper(url):
+    logging.info("downloading")
     today = date.today()
     d4 = today.strftime("%b-%d-%Y")
     filename = "The_Hindu_" + d4 + ".pdf"
@@ -53,8 +62,6 @@ def hindu(message):
             bot.send_document(message.chat.id, f)
             bot.delete_message(bb.chat.id, bb.id)
     except:
-        # ! The website from where the data is fetched.
-        url = os.environ["WEB_URL"]
         res = req.get(url)
         a = res.text.split("<td>")
         latest_paper = a[20].split("</td>")[0]
