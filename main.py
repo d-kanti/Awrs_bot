@@ -4,10 +4,16 @@ import shutil
 import telebot
 import urllib.request
 import requests as req
+import calendar
+import glob
+# from webserver import keep_alive
 from datetime import datetime
 from datetime import date
 from datetime import timedelta
 
+# keep_alive()
+
+# getting enviromentals, bot token & web url
 try:
     import test
     key = test.API_KEY
@@ -18,7 +24,7 @@ except:
    
 bot = telebot.TeleBot(key)
 
-
+#function to log
 def log_user(message):
     time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     user = str(message.from_user.first_name) + " " + str(message.from_user.last_name)
@@ -30,8 +36,6 @@ def log_user(message):
     print(st)
     with open("log.text","a") as f:
         f.write(st)
-
-
 def log(text):
     time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     st = f"[ {time} ] - {text}\n"
@@ -40,26 +44,37 @@ def log(text):
     with open("log.text","a") as f:
         f.write(st)
 
-
-    
-    
-    
-
+# downloads the paper 
 def download_paper(url):
     log("Downloading Paper.....")
     today = date.today()
     d4 = today.strftime("%b-%d-%Y")
     filename = "The_Hindu_" + d4 + ".pdf"
-    urllib.request.urlretrieve(url, filename)
+    urllib.request.urlretrieve(url, filename)   #Download file from url with following filename
+    log("Download Complete !!")
     return filename
 
+def mon(message):
+    t = message.text
+    # print(t)
+    for i in calendar.month_abbr:
+        if i.lower() in t.lower() and len(i.lower())==3:
+            return True
+    return False
 
-def paper_fun(message):
-    tt = message.text.lower()
-    if ("paper" in tt or "hindu" in tt):
-        return True
-    else:
-        return False
+def get_mon(message):
+    t = message.text
+    for i in calendar.month_abbr :
+        if i.lower() in t.lower() and len(i.lower())==3:
+            return i
+
+
+# def paper_fun(message):
+#     tt = message.text.lower()
+#     if ("paper" in tt or "hindu" in tt):
+#         return True
+#     else:
+#         return False
 
 
 @bot.message_handler(commands=['greet'])
@@ -82,6 +97,7 @@ def hindu(message):
         ", We are Uploading the file !!\n============================= \n\nPlease Wait....... "
     )
     try:
+        log("Trying to upload Previously Downloaded file.....")
         today = date.today()
         d4 = today.strftime("%b-%d-%Y")
         filename = "The_Hindu_" + d4 + ".pdf"
@@ -89,11 +105,11 @@ def hindu(message):
             bot.send_document(message.chat.id, f)
             bot.delete_message(bb.chat.id, bb.id)
     except:
+        log("No file found.")
         res = req.get(url)
         a = res.text.split("<td>")
         latest_paper = a[20].split("</td>")[0]
-        latest_paper_link = req.get(latest_paper).text.split(
-            "iframe")[3].split('"')[2]
+        latest_paper_link = req.get(latest_paper).text.split("iframe")[3].split('"')[2]
 
         filename = download_paper(latest_paper_link)
 
@@ -110,6 +126,15 @@ def hindu(message):
             pass
     log("Upload Complete...")
     # os.remove(filename)
+
+@bot.message_handler(func = mon)
+def month_pap(message):
+    m = get_mon(message)
+    print(m)
+    file_pref = "The_Hindu_"+m
+    for filename in glob.glob("prevPaper/"+file_pref+"-??-????.pdf"):
+        print(filename)
+
 
 
 print("running....", time.time())
