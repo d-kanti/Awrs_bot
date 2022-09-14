@@ -19,11 +19,14 @@ try:
     url = test.WEB_URL
 except:
     key = os.environ["API_KEY"]  # ! "YOUR_API_KEY"
-    url = os.environ["WEB_URL"]  # ! The website from where the data is fetched.
+    # ! The website from where the data is fetched.
+    url = os.environ["WEB_URL"]
 
 bot = telebot.TeleBot(key)
 
-#function to Log the User
+# function to Log the User
+
+
 def log_user(message):
     time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     user = str(message.from_user.first_name) + " " + str(
@@ -37,7 +40,9 @@ def log_user(message):
     with open("log.text", "a") as f:
         f.write(st)
 
-#Function to keep Log
+# Function to keep Log
+
+
 def log(text):
     time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     st = f"[ {time} ] - {text}\n"
@@ -54,11 +59,13 @@ def download_paper(url):
     d4 = today.strftime("%b-%d-%Y")
     filename = "The_Hindu_" + d4 + ".pdf"
     urllib.request.urlretrieve(
-        url, filename)  #Download file from url with following filename
+        url, filename)  # Download file from url with following filename
     log("Download Complete !!")
     return filename
 
-#check if any month mensoned in the message
+# check if any month mensoned in the message
+
+
 def mon(message):
     t = message.text
     for i in calendar.month_abbr:
@@ -66,18 +73,24 @@ def mon(message):
             return True
     return False
 
-#Always True
+# Always True
+
+
 def mon_inv(message):
     return True
 
-#Get the name of the month, mensioned in the message.
+# Get the name of the month, mensioned in the message.
+
+
 def get_mon(message):
     t = message.text
     for i in calendar.month_abbr:
         if i.lower() in t.lower() and len(i.lower()) == 3:
             return i
 
-#Greeting to anyone.
+# Greeting to anyone.
+
+
 @bot.message_handler(commands=['greet'])
 def greet(message):
     name = message.text.split()[1]
@@ -86,6 +99,8 @@ def greet(message):
 
 #! ======================== Paper Distribution ======================
 # gets the most recent paper and sends to the user.
+
+
 @bot.message_handler(commands=[
     'paper',
     'hindu',
@@ -162,8 +177,7 @@ def month_pap(message):
                 log(f"sending file '{filename}'")
                 bot.send_document(message.chat.id, f)
                 bot.edit_message_text(
-                    text=
-                    f"FIles Uploading\n==============\n\nProgress:  [[ {i+1}/{len(filelist)} ]]",
+                    text=f"FIles Uploading\n==============\n\nProgress:  [[ {i+1}/{len(filelist)} ]]",
                     message_id=cc.message_id,
                     chat_id=cc.chat.id)
 
@@ -183,8 +197,7 @@ def dn(message):
     log_user(message)
     log("Command not Recognized.  Sending the helping message....\nTask Completed....\n++++++++++++++++++++++++++++++++++++")
     bot.send_message(
-        text=
-        "Please use folloing commands\n==============================\n\n\n /paper -> get Latest Paper Available\n\n\n/September -> Get Papers for the month of September.",
+        text="Please use folloing commands\n==============================\n\n\n /paper -> get Latest Paper Available\n\n\n/September -> Get Papers for the month of September.",
         chat_id=message.chat.id)
 
 
