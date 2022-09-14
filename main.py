@@ -192,6 +192,18 @@ def month_pap(message):
     log("Uploade Complete..... \n++++++++++++++++++++++++++++++++++++++++++++++++++++++"
         )
 
+
+#! ======================== /start  or  /help ===========================
+#   If the Command is not recognized, a helping message is sent to the user.
+
+@bot.message_handlers(commands=['start', 'help'])
+def help(message):
+    log_user(message)
+    bot.send_message(
+        text="Please use folloing commands\n==============================\n\n\n /paper -> get Latest Paper Available\n\n\n/September -> Get Papers for the month of September.",
+        chat_id=message.chat.id)
+    log("Sending the helping message....\nTask Completed....\n++++++++++++++++++++++++++++++++++++")
+
 #! ======================== Unrecognized Command ===========================
 #   If the Command is not recognized, a helping message is sent to the user.
 
