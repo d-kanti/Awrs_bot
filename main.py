@@ -124,13 +124,14 @@ def hindu(message):
         d4 = yesterday.strftime("%b-%d-%Y")
         file = "The_Hindu_" + d4 + ".pdf"
         try:
-            shutil.move(file, "prevPaper/"+file)
+            shutil.move(file, "prevPaper/" + file)
         except:
             pass
-    log("Upload Complete....\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-    # os.remove(filename)
+    log("Upload Complete....\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+        )
 
-@bot.message_handler(func = mon)
+
+@bot.message_handler(func=mon)
 def month_pap(message):
     log_user(message)
     m = get_mon(message)
