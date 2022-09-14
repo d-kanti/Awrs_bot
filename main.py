@@ -178,6 +178,8 @@ def month_pap(message):
 
 @bot.message_handler(func=mon_inv)
 def dn(message):
+    log_user(message)
+    log("Command not Recognized.  Sending the helping message....\nTask Completed....\n++++++++++++++++++++++++++++++++++++")
     bot.send_message(
         text=
         "Please use folloing commands\n==============================\n\n\n /paper -> get Latest Paper Available\n\n\n/September -> Get Papers for the month of September.",
