@@ -147,14 +147,16 @@ def hindu(message):
 
 #! ======================== Monthly Paper Distribution ======================
 # gets the papers of a whole month, and send them to the user.
+
+
 @bot.message_handler(func=mon)
 def month_pap(message):
     log_user(message)
     m = get_mon(message)
     log(f"getting files ready for the month of {m}")
     file_pref = "The_Hindu_" + m
-    filelist = glob.glob(file_pref + "-??-????.pdf")
-    filelist = filelist + glob.glob("prevPaper/" + file_pref + "-??-????.pdf")
+    filelist = glob.glob("prevPaper/" + file_pref + "-??-????.pdf")
+    filelist = filelist + glob.glob(file_pref + "-??-????.pdf")
     if (len(filelist) < 1):
         bot.send_message(
             message.chat.id,
