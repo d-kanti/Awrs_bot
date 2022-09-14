@@ -211,10 +211,10 @@ def help(message):
 @bot.message_handler(lambda message: True)
 def dn(message):
     log_user(message)
-    log("Command not Recognized.  Sending the helping message....\nTask Completed....\n++++++++++++++++++++++++++++++++++++")
     bot.send_message(
         text="Please use folloing commands\n==============================\n\n\n /paper -> get Latest Paper Available\n\n\n/September -> Get Papers for the month of September.",
         chat_id=message.chat.id)
+    log("Command not Recognized.  Sending the helping message....\nTask Completed....\n++++++++++++++++++++++++++++++++++++")
 
 
 log("running....")
