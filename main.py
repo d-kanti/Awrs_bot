@@ -194,6 +194,8 @@ def month_pap(message):
 
 #! ======================== Unrecognized Command ===========================
 #   If the Command is not recognized, a helping message is sent to the user.
+
+
 @bot.message_handler(func=mon_inv)
 def dn(message):
     log_user(message)
@@ -203,6 +205,6 @@ def dn(message):
         chat_id=message.chat.id)
 
 
-print("running....", datetime.now())
+log("running....")
 
 bot.polling()
