@@ -135,21 +135,46 @@ def hindu(message):
 def month_pap(message):
     log_user(message)
     m = get_mon(message)
-    log(f"getting files ready for the month of {m}")    
-    bb = bot.send_message(message.chat.id,f"hi {message.from_user.first_name}, Please Wait.....\n\nWe are preparing your files... \n\n\nTill then.... Let's Grab a Coffee.. ☕😁")
-    file_pref = "The_Hindu_"+m
-    for filename in glob.glob(file_pref+"-??-????.pdf"):
-        with open(filename, 'rb') as f:
-            log(f"sending file '{filename}'")
-            bot.send_document(message.chat.id, f)
-    for filename in glob.glob("prevPaper/"+file_pref+"-??-????.pdf"):
-        with open(filename, 'rb') as f:
-            log(f"sending file '{filename}'")
-            bot.send_document(message.chat.id, f)
-    bot.delete_message(bb.chat.id, bb.id)
-    log("Uploade Complete.....\n++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+    log(f"getting files ready for the month of {m}")
+    file_pref = "The_Hindu_" + m
+    filelist = glob.glob(file_pref + "-??-????.pdf")
+    filelist = filelist + glob.glob("prevPaper/" + file_pref + "-??-????.pdf")
+    if (len(filelist) < 1):
+        bot.send_message(
+            message.chat.id,
+            "SORRY !!   😢 \n\n There are no files for the following month...")
+        log("No files to send.... Task Complete !! \n++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+            )
+    else:
+        bb = bot.send_message(
+            message.chat.id,
+            f"hi {message.from_user.first_name}, Please Wait.....\n\nWe are preparing your files... \n\n\nTill then.... Let's Grab a Coffee.. ☕😁"
+        )
+        cc = bot.send_message(
+            message.chat.id,
+            f"FIles Uploading\n==============\n\nProgress:  [[ {0}/{len(filelist)} ]]"
+        )
 
- 
+        for i in range(len(filelist)):
+            filename = filelist[i]
+            with open(filename, 'rb') as f:
+                log(f"sending file '{filename}'")
+                bot.send_document(message.chat.id, f)
+                bot.edit_message_text(
+                    text=
+                    f"FIles Uploading\n==============\n\nProgress:  [[ {i+1}/{len(filelist)} ]]",
+                    message_id=cc.message_id,
+                    chat_id=cc.chat.id)
+
+        bot.edit_message_text(
+            text=f"FIles Uploaded\n==============\n\nProgress:  [ ✅ ]",
+            message_id=cc.message_id,
+            chat_id=cc.chat.id)
+        bot.delete_message(bb.chat.id, bb.id)
+
+    log("Uploade Complete..... \n++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+        )
+
 
 
 
