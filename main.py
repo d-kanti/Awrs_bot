@@ -176,6 +176,12 @@ def month_pap(message):
         )
 
 
+@bot.message_handler(func=mon_inv)
+def dn(message):
+    bot.send_message(
+        text=
+        "Please use folloing commands\n==============================\n\n\n /paper -> get Latest Paper Available\n\n\n/September -> Get Papers for the month of September.",
+        chat_id=message.chat.id)
 
 
 print("running....", datetime.now())
