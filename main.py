@@ -196,7 +196,7 @@ def month_pap(message):
 #! ======================== /start  or  /help ===========================
 #   If the Command is not recognized, a helping message is sent to the user.
 
-@bot.message_handlers(commands=['start', 'help'])
+@bot.message_handler(commands=['start', 'help'])
 def help(message):
     log_user(message)
     bot.send_message(
@@ -208,7 +208,7 @@ def help(message):
 #   If the Command is not recognized, a helping message is sent to the user.
 
 
-@bot.message_handler(lambda message: True)
+@bot.message_handler(func=lambda message: True)
 def dn(message):
     log_user(message)
     bot.send_message(
