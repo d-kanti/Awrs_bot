@@ -208,7 +208,7 @@ def help(message):
 #   If the Command is not recognized, a helping message is sent to the user.
 
 
-@bot.message_handler(func=mon_inv)
+@bot.message_handler(lambda message: True)
 def dn(message):
     log_user(message)
     log("Command not Recognized.  Sending the helping message....\nTask Completed....\n++++++++++++++++++++++++++++++++++++")
