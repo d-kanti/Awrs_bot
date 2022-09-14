@@ -23,8 +23,7 @@ except:
 
 bot = telebot.TeleBot(key)
 
-
-#function to log
+#function to Log the User
 def log_user(message):
     time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     user = str(message.from_user.first_name) + " " + str(
@@ -38,7 +37,7 @@ def log_user(message):
     with open("log.text", "a") as f:
         f.write(st)
 
-
+#Function to keep Log
 def log(text):
     time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     st = f"[ {time} ] - {text}\n"
@@ -59,7 +58,7 @@ def download_paper(url):
     log("Download Complete !!")
     return filename
 
-
+#check if any month mensoned in the message
 def mon(message):
     t = message.text
     for i in calendar.month_abbr:
@@ -67,25 +66,26 @@ def mon(message):
             return True
     return False
 
-
+#Always True
 def mon_inv(message):
     return True
 
-
+#Get the name of the month, mensioned in the message.
 def get_mon(message):
     t = message.text
     for i in calendar.month_abbr:
         if i.lower() in t.lower() and len(i.lower()) == 3:
             return i
 
-
+#Greeting to anyone.
 @bot.message_handler(commands=['greet'])
 def greet(message):
     name = message.text.split()[1]
     bot.reply_to(message, f"Hi {name} what's up")
     print(message.text)
 
-
+#! ======================== Paper Distribution ======================
+# gets the most recent paper and sends to the user.
 @bot.message_handler(commands=[
     'paper',
     'hindu',
@@ -130,7 +130,8 @@ def hindu(message):
     log("Upload Complete....\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
         )
 
-
+#! ======================== Monthly Paper Distribution ======================
+# gets the papers of a whole month, and send them to the user.
 @bot.message_handler(func=mon)
 def month_pap(message):
     log_user(message)
@@ -175,7 +176,8 @@ def month_pap(message):
     log("Uploade Complete..... \n++++++++++++++++++++++++++++++++++++++++++++++++++++++"
         )
 
-
+#! ======================== Unrecognized Command ===========================
+#   If the Command is not recognized, a helping message is sent to the user.
 @bot.message_handler(func=mon_inv)
 def dn(message):
     log_user(message)
