@@ -1,15 +1,14 @@
 import os
-import time
+import glob
 import shutil
 import telebot
+import calendar
 import urllib.request
 import requests as req
-import calendar
-import glob
-# from webserver import keep_alive
-from datetime import datetime
 from datetime import date
+from datetime import datetime
 from datetime import timedelta
+# from webserver import keep_alive
 
 # keep_alive()
 
@@ -19,62 +18,65 @@ try:
     key = test.API_KEY
     url = test.WEB_URL
 except:
-    key = os.environ["API_KEY"]   # ! "YOUR_API_KEY"
-    url = os.environ["WEB_URL"]      # ! The website from where the data is fetched.
-   
+    key = os.environ["API_KEY"]  # ! "YOUR_API_KEY"
+    url = os.environ["WEB_URL"]  # ! The website from where the data is fetched.
+
 bot = telebot.TeleBot(key)
+
 
 #function to log
 def log_user(message):
     time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-    user = str(message.from_user.first_name) + " " + str(message.from_user.last_name)
+    user = str(message.from_user.first_name) + " " + str(
+        message.from_user.last_name)
     uid = message.from_user.id
     chat = message.chat.id
 
     st = f"[ {time} ] - {message.text} ||  user: {user} ({uid})   chat id : {chat}\n"
 
     print(st)
-    with open("log.text","a") as f:
+    with open("log.text", "a") as f:
         f.write(st)
+
+
 def log(text):
     time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     st = f"[ {time} ] - {text}\n"
-    
+
     print(st)
-    with open("log.text","a") as f:
+    with open("log.text", "a") as f:
         f.write(st)
 
-# downloads the paper 
+
+# downloads the paper
 def download_paper(url):
     log("Downloading Paper.....")
     today = date.today()
     d4 = today.strftime("%b-%d-%Y")
     filename = "The_Hindu_" + d4 + ".pdf"
-    urllib.request.urlretrieve(url, filename)   #Download file from url with following filename
+    urllib.request.urlretrieve(
+        url, filename)  #Download file from url with following filename
     log("Download Complete !!")
     return filename
 
+
 def mon(message):
     t = message.text
-    # print(t)
     for i in calendar.month_abbr:
-        if i.lower() in t.lower() and len(i.lower())==3:
+        if i.lower() in t.lower() and len(i.lower()) == 3:
             return True
     return False
 
+
+def mon_inv(message):
+    return True
+
+
 def get_mon(message):
     t = message.text
-    for i in calendar.month_abbr :
-        if i.lower() in t.lower() and len(i.lower())==3:
+    for i in calendar.month_abbr:
+        if i.lower() in t.lower() and len(i.lower()) == 3:
             return i
-
-
-# def paper_fun(message):
-#     tt = message.text.lower()
-#     if ("paper" in tt or "hindu" in tt):
-#         return True
-#     else:
-#         return False
 
 
 @bot.message_handler(commands=['greet'])
@@ -109,7 +111,8 @@ def hindu(message):
         res = req.get(url)
         a = res.text.split("<td>")
         latest_paper = a[20].split("</td>")[0]
-        latest_paper_link = req.get(latest_paper).text.split("iframe")[3].split('"')[2]
+        latest_paper_link = req.get(latest_paper).text.split(
+            "iframe")[3].split('"')[2]
 
         filename = download_paper(latest_paper_link)
 
