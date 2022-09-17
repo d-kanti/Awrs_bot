@@ -8,9 +8,9 @@ import requests as req
 from datetime import date
 from datetime import datetime
 from datetime import timedelta
-# from webserver import keep_alive
+from webserver import keep_alive
 
-# keep_alive()
+keep_alive()
 
 # getting enviromentals, bot token & web url
 try:
