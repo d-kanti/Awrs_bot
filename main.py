@@ -25,7 +25,6 @@ except:
 
 bot = telebot.TeleBot(key)
 
-
 #! ======================== Paper Distribution ======================
 
 
@@ -42,37 +41,29 @@ def hindu(message):
         message.chat.id, message.from_user.first_name +
         ", We are Uploading the file !!\n============================= \n\nPlease Wait....... "
     )
-    try:
-        mf.log("Trying to upload Previously Downloaded file.....")
-        today = date.today()
-        d4 = today.strftime("%b-%d-%Y")
-        filename = "The_Hindu_" + d4 + ".pdf"
+    filename = mf.todays_filename()
+    if os.path.exists(filename):
+        mf.log("Previously Downloaded Paper Found !! Uploading......")
         with open(filename, 'rb') as f:
             bot.send_document(message.chat.id, f)
-            bot.delete_message(bb.chat.id, bb.id)
-    except:
-        mf.log("No file found.")
-        res = req.get(url)
-        a = res.text.split("<td>")
-        latest_paper = a[20].split("</td>")[0]
-        latest_paper_link = req.get(latest_paper).text.split(
-            "iframe")[3].split('"')[2]
-
-        filename = mf.download_paper(latest_paper_link)
-
+            f.close()
+    else:
+        mf.log("No Previously Downloaded Paper Found !!")
+        mf.download_latest_paper()
         with open(filename, 'rb') as f:
             bot.send_document(message.chat.id, f)
-            bot.delete_message(bb.chat.id, bb.id)
-
-        yesterday = date.today() - timedelta(days=1)
-        d4 = yesterday.strftime("%b-%d-%Y")
-        file = "The_Hindu_" + d4 + ".pdf"
+            f.close()
         try:
-            shutil.move(file, "prevPaper/" + file)
+            yester_file = mf.yesterdays_filename()
+            shutil.move(yester_file, "prevPaper/" + yester_file)
         except:
             pass
-    mf.log("Upload Complete....\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-           )
+
+    bot.delete_message(message.chat.id, bb.id)
+    mf.log(
+        "Upload Complete....\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+    )
+
 
 #! ======================== Monthly Paper Distribution ======================
 
@@ -85,13 +76,15 @@ def month_pap(message):
     mf.log(f"getting files ready for the month of {m}")
     file_pref = "The_Hindu_" + m
     filelist = glob.glob("prevPaper/" + file_pref + "-??-????.pdf")
+    filelist.sort()
     filelist = filelist + glob.glob(file_pref + "-??-????.pdf")
     if (len(filelist) < 1):
         bot.send_message(
             message.chat.id,
             "SORRY !!   😢 \n\n There are no files for the following month...")
-        mf.log("No files to send.... Task Complete !! \n++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-               )
+        mf.log(
+            "No files to send.... Task Complete !! \n++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+        )
     else:
         bb = bot.send_message(
             message.chat.id,
@@ -108,7 +101,8 @@ def month_pap(message):
                 mf.log(f"sending file '{filename}'")
                 bot.send_document(message.chat.id, f)
                 bot.edit_message_text(
-                    text=f"FIles Uploading\n==============\n\nProgress:  [[ {i+1}/{len(filelist)} ]]",
+                    text=
+                    f"FIles Uploading\n==============\n\nProgress:  [[ {i+1}/{len(filelist)} ]]",
                     message_id=cc.message_id,
                     chat_id=cc.chat.id)
 
@@ -118,8 +112,9 @@ def month_pap(message):
             chat_id=cc.chat.id)
         bot.delete_message(bb.chat.id, bb.id)
 
-    mf.log("Uploade Complete..... \n++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-           )
+    mf.log(
+        "Uploade Complete..... \n++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+    )
 
 
 #! ======================== /start  or  /help ===========================
@@ -130,9 +125,13 @@ def month_pap(message):
 def help(message):
     mf.log_user(message)
     bot.send_message(
-        text="Please use folloing commands\n==============================\n\n\n /paper -> get Latest Paper Available\n\n\n/September -> Get Papers for the month of September.",
+        text=
+        "Please use folloing commands\n==============================\n\n\n /paper -> get Latest Paper Available\n\n\n/September -> Get Papers for the month of September.",
         chat_id=message.chat.id)
-    mf.log("Sending the helping message....\nTask Completed....\n++++++++++++++++++++++++++++++++++++")
+    mf.log(
+        "Sending the helping message....\nTask Completed....\n++++++++++++++++++++++++++++++++++++"
+    )
+
 
 #! ======================== Unrecognized Command ===========================
 
@@ -142,9 +141,12 @@ def help(message):
 def dn(message):
     mf.log_user(message)
     bot.send_message(
-        text="Please use folloing commands\n==============================\n\n\n /paper -> get Latest Paper Available\n\n\n/September -> Get Papers for the month of September.",
+        text=
+        "Please use folloing commands\n==============================\n\n\n /paper -> get Latest Paper Available\n\n\n/September -> Get Papers for the month of September.",
         chat_id=message.chat.id)
-    mf.log("Command not Recognized.  Sending the helping message....\nTask Completed....\n++++++++++++++++++++++++++++++++++++")
+    mf.log(
+        "Command not Recognized.  Sending the helping message....\nTask Completed....\n++++++++++++++++++++++++++++++++++++"
+    )
 
 
 mf.log("running....")
